@@ -1,6 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  transpilePackages: ["@learnverse/types", "@learnverse/config"],
-};
+const nextConfig = {};
 
 module.exports = nextConfig;
