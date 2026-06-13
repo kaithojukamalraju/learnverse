@@ -7,16 +7,17 @@ settings:
 importers:
 
   .:
-    devDependencies:
-      prettier:
-        specifier: ^3.2.0
-        version: 3.8.4
+    dependencies:
       turbo:
         specifier: ^2.0.0
         version: 2.9.18
       typescript:
         specifier: ^5.4.0
         version: 5.9.3
+    devDependencies:
+      prettier:
+        specifier: ^3.2.0
+        version: 3.8.4
 
   apps/web:
     dependencies:
@@ -26,9 +27,6 @@ importers:
       '@learnverse/ai':
         specifier: workspace:^
         version: link:../../packages/ai
-      '@prisma/client':
-        specifier: ^5.10.0
-        version: 5.22.0(prisma@5.22.0)
       '@radix-ui/react-avatar':
         specifier: ^1.0.4
         version: 1.1.12(@types/react-dom@18.2.0)(@types/react@18.3.31)(react-dom@18.2.0(react@18.3.1))(react@18.3.1)
@@ -71,6 +69,21 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.108.1
         version: 2.108.1
+      '@types/node':
+        specifier: ^20.11.0
+        version: 20.19.43
+      '@types/react':
+        specifier: ^18.2.0
+        version: 18.3.31
+      '@types/react-dom':
+        specifier: ^18.2.0
+        version: 18.2.0
+      '@types/three':
+        specifier: ^0.167.0
+        version: 0.167.0
+      autoprefixer:
+        specifier: ^10.4.17
+        version: 10.5.0(postcss@8.5.15)
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.1
@@ -89,6 +102,9 @@ importers:
       next:
         specifier: ^15.0.0
         version: 15.5.19(react-dom@18.2.0(react@18.3.1))(react@18.3.1)
+      postcss:
+        specifier: ^8.4.35
+        version: 8.5.15
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -101,37 +117,18 @@ importers:
       tailwind-merge:
         specifier: ^2.2.0
         version: 2.6.1
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      zustand:
-        specifier: ^4.5.0
-        version: 4.5.7(@types/react@18.3.31)(react@18.3.1)
-    devDependencies:
-      '@types/node':
-        specifier: ^20.11.0
-        version: 20.19.43
-      '@types/react':
-        specifier: ^18.2.0
-        version: 18.3.31
-      '@types/react-dom':
-        specifier: ^18.2.0
-        version: 18.2.0
-      '@types/three':
-        specifier: ^0.167.0
-        version: 0.167.0
-      autoprefixer:
-        specifier: ^10.4.17
-        version: 10.5.0(postcss@8.5.15)
-      postcss:
-        specifier: ^8.4.35
-        version: 8.5.15
       tailwindcss:
         specifier: ^3.4.1
         version: 3.4.19(tsx@4.22.4)
+      three:
+        specifier: ^0.167.1
+        version: 0.167.1
       typescript:
         specifier: ^5.4.0
         version: 5.9.3
+      zustand:
+        specifier: ^4.5.0
+        version: 4.5.7(@types/react@18.3.31)(react@18.3.1)
 
   packages/ai: {}
 
