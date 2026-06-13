@@ -1,0 +1,22 @@
+{
+  "name": "learnverse-ai",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev --filter=@learnverse/web",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "db:push": "cd packages/db && npx prisma db push",
+    "db:generate": "cd packages/db && npx prisma generate",
+    "db:seed": "cd packages/db && npx prisma db seed"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.0",
+    "turbo": "^2.0.0",
+    "typescript": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@9.0.0"
+}

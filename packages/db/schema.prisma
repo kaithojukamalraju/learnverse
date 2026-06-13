@@ -1,0 +1,226 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String   @id @default(uuid()) @db.Uuid
+  name          String   @db.VarChar(120)
+  email         String   @unique @db.VarChar(180)
+  password_hash String   @db.Text
+  role          String   @default("student") @db.VarChar(30)
+  avatar_url    String?
+  level         String   @default("beginner") @db.VarChar(30)
+  xp            Int      @default(0)
+  streak        Int      @default(0)
+  last_active_date DateTime @default(now()) @db.Date
+  created_at    DateTime @default(now()) @db.Timestamptz
+  updated_at    DateTime @default(now()) @db.Timestamptz
+
+  progress          Progress[]
+  quizAttempts      QuizAttempt[]
+  userAchievements  UserAchievement[]
+  aiChats           AIChat[]
+  recommendations   Recommendation[]
+  notifications     Notification[]
+}
+
+model Module {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String   @db.VarChar(200)
+  slug        String   @unique @db.VarChar(200)
+  description String?  @db.Text
+  icon        String?  @db.VarChar(100)
+  color       String?  @db.VarChar(30)
+  difficulty  String   @default("beginner") @db.VarChar(20)
+  order_index Int      @default(0)
+  is_published Boolean @default(false)
+  created_at  DateTime @default(now()) @db.Timestamptz
+  updated_at  DateTime @default(now()) @db.Timestamptz
+
+  lessons         Lesson[]
+  quizzes         Quiz[]
+  progress        Progress[]
+  recommendations Recommendation[]
+}
+
+model Lesson {
+  id              String   @id @default(uuid()) @db.Uuid
+  module_id       String   @db.Uuid
+  title           String   @db.VarChar(200)
+  slug            String   @db.VarChar(200)
+  content         String?  @db.Text
+  content_type    String   @default("markdown") @db.VarChar(30)
+  video_url       String?
+  duration_minutes Int     @default(10)
+  order_index     Int      @default(0)
+  is_published    Boolean  @default(false)
+  created_at      DateTime @default(now()) @db.Timestamptz
+  updated_at      DateTime @default(now()) @db.Timestamptz
+
+  module      Module       @relation(fields: [module_id], references: [id], onDelete: Cascade)
+  scenes      Scene[]
+  quizzes     Quiz[]
+  progress    Progress[]
+  recommendations Recommendation[]
+
+  @@unique([module_id, slug])
+}
+
+model Scene {
+  id        String   @id @default(uuid()) @db.Uuid
+  lesson_id String   @db.Uuid
+  title     String   @db.VarChar(200)
+  type      String   @db.VarChar(50)
+  config    Json     @default("{}")
+  model_url String?
+  created_at DateTime @default(now()) @db.Timestamptz
+
+  lesson Lesson @relation(fields: [lesson_id], references: [id], onDelete: Cascade)
+}
+
+model Quiz {
+  id               String   @id @default(uuid()) @db.Uuid
+  lesson_id        String?  @db.Uuid
+  module_id        String?  @db.Uuid
+  title            String   @db.VarChar(200)
+  description      String?  @db.Text
+  difficulty       String   @default("beginner") @db.VarChar(20)
+  time_limit_seconds Int    @default(300)
+  passing_score    Int      @default(70)
+  max_attempts     Int      @default(3)
+  is_adaptive      Boolean  @default(false)
+  created_at       DateTime @default(now()) @db.Timestamptz
+
+  lesson      Lesson?        @relation(fields: [lesson_id], references: [id], onDelete: Cascade)
+  module      Module?        @relation(fields: [module_id], references: [id], onDelete: Cascade)
+  questions   Question[]
+  attempts    QuizAttempt[]
+}
+
+model Question {
+  id             String   @id @default(uuid()) @db.Uuid
+  quiz_id        String   @db.Uuid
+  text           String   @db.Text
+  type           String   @default("multiple_choice") @db.VarChar(30)
+  options        Json     @default("[]")
+  correct_answer String   @db.Text
+  explanation    String?  @db.Text
+  difficulty     String   @default("beginner") @db.VarChar(20)
+  points         Int      @default(10)
+  order_index    Int      @default(0)
+  created_at     DateTime @default(now()) @db.Timestamptz
+
+  quiz Quiz @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
+}
+
+model QuizAttempt {
+  id                String    @id @default(uuid()) @db.Uuid
+  user_id           String    @db.Uuid
+  quiz_id           String    @db.Uuid
+  score             Int       @default(0)
+  max_score         Int       @default(0)
+  answers           Json      @default("[]")
+  time_taken_seconds Int      @default(0)
+  passed            Boolean   @default(false)
+  started_at        DateTime  @default(now()) @db.Timestamptz
+  completed_at      DateTime? @db.Timestamptz
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  quiz Quiz @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
+}
+
+model Progress {
+  id                String    @id @default(uuid()) @db.Uuid
+  user_id           String    @db.Uuid
+  module_id         String?   @db.Uuid
+  lesson_id         String?   @db.Uuid
+  status            String    @default("not_started") @db.VarChar(30)
+  score             Int       @default(0)
+  time_spent_minutes Int      @default(0)
+  completed_at      DateTime? @db.Timestamptz
+  created_at        DateTime  @default(now()) @db.Timestamptz
+  updated_at        DateTime  @default(now()) @db.Timestamptz
+
+  user   User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  module Module? @relation(fields: [module_id], references: [id], onDelete: SetNull)
+  lesson Lesson? @relation(fields: [lesson_id], references: [id], onDelete: SetNull)
+
+  @@unique([user_id, lesson_id])
+  @@unique([user_id, module_id])
+}
+
+model Achievement {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String   @db.VarChar(200)
+  slug        String   @unique @db.VarChar(200)
+  description String?  @db.Text
+  icon        String?  @db.VarChar(100)
+  xp_reward   Int      @default(0)
+  criteria    Json     @default("{}")
+  created_at  DateTime @default(now()) @db.Timestamptz
+
+  userAchievements UserAchievement[]
+}
+
+model UserAchievement {
+  id             String   @id @default(uuid()) @db.Uuid
+  user_id        String   @db.Uuid
+  achievement_id String   @db.Uuid
+  unlocked_at    DateTime @default(now()) @db.Timestamptz
+
+  user        User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievement_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, achievement_id])
+}
+
+model AIChat {
+  id         String   @id @default(uuid()) @db.Uuid
+  user_id    String   @db.Uuid
+  session_id String   @default(uuid()) @db.Uuid
+  role       String   @db.VarChar(20)
+  content    String   @db.Text
+  metadata   Json     @default("{}")
+  tokens_used Int     @default(0)
+  created_at DateTime @default(now()) @db.Timestamptz
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, session_id, created_at])
+}
+
+model Recommendation {
+  id        String   @id @default(uuid()) @db.Uuid
+  user_id   String   @db.Uuid
+  module_id String?  @db.Uuid
+  lesson_id String?  @db.Uuid
+  reason    String?  @db.Text
+  score     Decimal  @default(0) @db.Decimal(5, 2)
+  is_viewed Boolean  @default(false)
+  created_at DateTime @default(now()) @db.Timestamptz
+
+  user   User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  module Module? @relation(fields: [module_id], references: [id], onDelete: SetNull)
+  lesson Lesson? @relation(fields: [lesson_id], references: [id], onDelete: SetNull)
+}
+
+model Notification {
+  id         String   @id @default(uuid()) @db.Uuid
+  user_id    String   @db.Uuid
+  type       String   @db.VarChar(50)
+  title      String   @db.VarChar(200)
+  body       String?  @db.Text
+  data       Json     @default("{}")
+  is_read    Boolean  @default(false)
+  created_at DateTime @default(now()) @db.Timestamptz
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, created_at])
+}

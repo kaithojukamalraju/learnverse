@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd ../.. && npx turbo run build --filter=@learnverse/web",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "installCommand": "npm install -g pnpm && pnpm install",
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://learnverse-api.onrender.com/api/:path*" }
+  ]
+}
