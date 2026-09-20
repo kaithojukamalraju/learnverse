@@ -1,6 +1,6 @@
 # LearnVerse AI — Project Write-Up
 
-**Submitted by:** [YOUR NAME]  
+**Submitted by:** Kamal Raju  
 **Role:** Frontend Developer  
 **Date:** June 2026  
 **GitHub:** https://github.com/kaithojukamalraju/learnverse
@@ -181,4 +181,4 @@ pnpm dev
 
 ---
 
-*Submitted with ❤️ by [YOUR NAME] — Frontend Developer*
+*Submitted with ❤️ by Kamal Raju — Frontend Developer*
